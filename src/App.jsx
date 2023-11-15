@@ -5,10 +5,12 @@ import SignUp from "./pages/SignUp";
 import About from "./pages/About";
 import Profile from "./pages/Profile";
 import Header from "./components/Header";
+import { Toaster } from "react-hot-toast";
 export default function App() {
   return (
     <BrowserRouter>
       <Header />
+      <Toaster position="top-right" />
       <Routes>
         <Route path="/" element={<Home />}></Route>
         <Route path="/sign-in" element={<SignIn />}></Route>
