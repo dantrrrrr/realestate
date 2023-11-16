@@ -1,37 +1,37 @@
-import { useState, useRef } from "react";
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useForm } from "react-hook-form";
+const EMAIL_REGEX = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
+const PASSWORD_REGEX = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}$/;
+const USERNAME_REGEX = /^\w{6,}$/;
 export default function SignUp() {
-  console.log("render");
-  const usernameRef = useRef(null);
-  const emailRef = useRef(null);
-  const passwordRef = useRef(null);
-  // const [data, setData] = useState(null);
+  const {
+    handleSubmit,
+    register,
+    reset,
+    formState: { errors },
+  } = useForm();
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const username = usernameRef.current.value;
-    const email = emailRef.current.value;
-    const password = passwordRef.current.value;
+  const navigate = useNavigate();
+  const onSubmit = async (data) => {
     setLoading(true);
 
     try {
-      // Make a POST request using Axios
-      const response = await axios.post("/api/auth/signup", {
-        username,
-        email,
-        password,
-      });
-      // setData(response.data);
+      const response = await axios.post("/api/auth/signup", data);
       toast.success(response.data.message);
-
-      // console.log("Server response:", response.data);
+      reset();
+      navigate("/sign-in");
     } catch (err) {
-      setError(err.response ? err.response.data.error : err.message);
-      // console.log(error)
-      // console.error("Error during signup:", err.response.data);
+      setError(
+        err.response.data.error
+          ? err.response.data.error
+          : err.response.statusText
+      );
+
       toast.error(error);
     } finally {
       setLoading(false);
@@ -43,8 +43,11 @@ export default function SignUp() {
         <h1 className="text-3xl text-center font-semibold my-7 text-gray-600">
           Sign up
         </h1>
-        <form className="flex flex-col gap-y-4" onSubmit={handleSubmit}>
-          <div className="mb-4">
+        <form
+          className="flex flex-col gap-y-4"
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <div className="mb-2">
             <label
               htmlFor="username"
               className="block mb-2 text-sm font-medium text-gray-700"
@@ -55,13 +58,22 @@ export default function SignUp() {
               type="text"
               name="username"
               id="username"
-              ref={usernameRef}
+              {...register("username", {
+                require: true,
+                pattern: USERNAME_REGEX,
+              })}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600"
               placeholder="Enter your username"
-              required
             />
+            {errors.username && (
+              <p className="text-red-500 text-xs mt-2">
+                {errors.username.type === "required"
+                  ? "Username is required"
+                  : "Username must be at least 6 characters"}
+              </p>
+            )}
           </div>
-          <div className="mb-4">
+          <div className="mb-2">
             <label
               htmlFor="email"
               className="block mb-2 text-sm font-medium text-gray-700"
@@ -72,13 +84,19 @@ export default function SignUp() {
               type="email"
               name="email"
               id="email"
-              ref={emailRef}
+              {...register("email", { required: true, pattern: EMAIL_REGEX })}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600"
               placeholder="Enter your email address"
-              required
             />
+            {errors.email && (
+              <p className="text-red-500 text-xs mt-2">
+                {errors.email.type === "required"
+                  ? "Email is required"
+                  : "Email is invalid"}
+              </p>
+            )}
           </div>
-          <div className="mb-4">
+          <div className="mb-2">
             <label
               htmlFor="password"
               className="block mb-2 text-sm font-medium text-gray-700"
@@ -89,11 +107,21 @@ export default function SignUp() {
               type="password"
               id="password"
               name="password"
-              ref={passwordRef}
+              {...register("password", {
+                required: true,
+                pattern: PASSWORD_REGEX,
+              })}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600"
               placeholder="Enter your password"
-              required
             />
+            {errors.password && console.log(errors.password)}
+            {errors.password && (
+              <p className="text-red-500 text-xs mt-2">
+                {errors.password.type === "required"
+                  ? "Password is required"
+                  : "Password must be at least 8 characters long and contain at least one uppercase letter, one number, and one special character"}
+              </p>
+            )}
           </div>
 
           <button
