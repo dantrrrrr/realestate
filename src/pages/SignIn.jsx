@@ -1,10 +1,18 @@
-import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+  useUserSelector,
+} from "../redux/user/userSlice";
+
 const EMAIL_REGEX = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
 export default function SignIn() {
+  // Assign hooks
   const {
     handleSubmit,
     register,
@@ -12,32 +20,35 @@ export default function SignIn() {
     formState: { errors },
   } = useForm();
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const onSubmit = async (data) => {
-    console.log("🚀 ~ file: SignIn.jsx:19 ~ onSubmit ~ data:", data);
-    setLoading(true);
+  const dispatch = useDispatch();
+  const { loading, error } = useUserSelector();
 
+  //function
+  // Function to handle form submission
+
+  const onSubmit = async (data) => {
+    dispatch(signInStart());
     try {
       const response = await axios.post("/api/auth/signin", data);
+      // console.log("🚀 ~ file: SignIn.jsx:32 ~ onSubmit ~ response:", response);
 
+      dispatch(signInSuccess(response.data));
       toast.success(`Welcome ${response.data.username}`);
       reset();
       navigate("/");
     } catch (err) {
       // console.log("🚀 ~ file: SignIn.jsx:29 ~ onSubmit ~ err:", err);
-      setError(
-        err.response.data.message
-          ? err.response.data.message
-          : err.response.statusText
-      );
 
-      toast.error(error);
-    } finally {
-      setLoading(false);
+      dispatch(
+        signInFailure(err.response.data.message || err.response.statusText)
+      );
+      // toast.error(err.response.data.message || err.response.statusText);
+
+      toast.error(error || "An error occurred during sign-in");
     }
   };
+
   return (
     <div className="p-3  max-w-lg mx-auto flex flex-col items-center justify-center h-screen">
       <div className="w-96 p-8 rounded-lg shadow-lg bg-gray-50 ">
