@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { useSelector } from "react-redux";
+import { useSelector, useStore } from "react-redux";
 
 const initialState = {
   currentuser: null,
@@ -26,6 +26,10 @@ const userSlice = createSlice({
   },
 });
 export const useUserSelector = () => {
+  const store = useStore();
+  if (!store.getState().user) {
+    throw new Error("useUserSelector must be used within the Redux provider");
+  }
   return useSelector((state) => state.user);
 };
 export const { signInStart, signInSuccess, signInFailure } = userSlice.actions;
