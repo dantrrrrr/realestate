@@ -9,6 +9,7 @@ import {
   signInFailure,
   useUserSelector,
 } from "../redux/user/userSlice";
+import OAuth from "../components/OAuth";
 
 const EMAIL_REGEX = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
 export default function SignIn() {
@@ -111,6 +112,7 @@ export default function SignIn() {
               <span>Sign In</span>
             )}
           </button>
+          <OAuth />
         </form>
         <div className="flex gap-2 mt-5 text-xs justify-end ">
           <p> Do not have an account ?</p>

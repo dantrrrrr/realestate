@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
+import OAuth from "../components/OAuth";
 const EMAIL_REGEX = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
 const PASSWORD_REGEX = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}$/;
 const USERNAME_REGEX = /^\w{6,}$/;
@@ -135,6 +136,7 @@ export default function SignUp() {
               <span>Sign up</span>
             )}
           </button>
+          <OAuth/>
         </form>
         <div className="flex gap-2 mt-5 text-xs justify-end ">
           <p>Have an account ?</p>
