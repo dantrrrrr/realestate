@@ -26,9 +26,10 @@ export default function SignUp() {
       reset();
       navigate("/sign-in");
     } catch (err) {
+      console.log("🚀 ~ file: SignUp.jsx:29 ~ onSubmit ~ err:", err);
       setError(
-        err.response.data.error
-          ? err.response.data.error
+        err.response.data.message
+          ? err.response.data.message
           : err.response.statusText
       );
 
@@ -135,10 +136,10 @@ export default function SignUp() {
             )}
           </button>
         </form>
-        <div className="flex gap-2 mt-5 text-sm justify-end ">
+        <div className="flex gap-2 mt-5 text-xs justify-end ">
           <p>Have an account ?</p>
           <Link to="/sign-in">
-            <span className="text-blue-700 hover:underline">Sign in</span>
+            <span className="text-blue-700 hover:underline">Sign In</span>
           </Link>
         </div>
       </div>
