@@ -3,8 +3,12 @@ import { app } from "../firebase";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { signInSuccess, useUserSelector } from "../redux/user/userSlice";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+
 export default function OAuth() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { loading, error } = useUserSelector();
   const handleGoogleClick = async () => {
     try {
@@ -23,7 +27,10 @@ export default function OAuth() {
       const response = await axios.post("/api/auth/google", data);
 
       dispatch(signInSuccess(response.data));
+      toast.success("Login with Google successfully");
+      navigate("/");
     } catch (error) {
+      toast.error("Something went wrong");
       console.log("Could not sign in with Google", error);
     }
   };
