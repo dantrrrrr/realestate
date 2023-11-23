@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
+import reactIcons from "vite-plugin-react-icons";
 
 const API_URL = "https://api-realestate-blue.vercel.app";
 
@@ -9,10 +10,10 @@ export default defineConfig({
       "/api": { target: API_URL, secure: false },
     },
   },
-  plugins: [react()],
-  build: {
-    rollupOptions: {
-      external: ["react-icons/fa"],
-    },
-  },
+  plugins: [react(),reactIcons()],
+  // build: {
+  //   rollupOptions: {
+  //     external: ["react-icons/fa"],
+  //   },
+  // },
 });
