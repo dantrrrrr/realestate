@@ -15,7 +15,7 @@ export default defineConfig({
   plugins: [reactRefresh()],
   build: {
     rollupOptions: {
-      external: ["react-icons/fa"],
+      external: ["react-icons"],
     },
   },
 });
